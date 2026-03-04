@@ -6,22 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('almacenes', function (Blueprint $table) {
             
             $table->id();
-            $table->string('codigo', 50)->unique();
-            $table->string('nombre', 80);
-            $table->string('descripcion', 255)->nullable();
-            $table->string('direccion', 255)->nullable();
-            $table->boolean('estado')->default(true);
+            $table->string('codigo');
+
+            $table->string('nombre');
+            $table->string('descripcion')->nullable();
+            $table->string('direccion')->nullable();
+
+            //ACTIVO INACTIVO TINYINT 01
+            $table->tinyInteger('estado')->default(1);
 
             $table->timestamps();
         });
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('almacenes');
     }

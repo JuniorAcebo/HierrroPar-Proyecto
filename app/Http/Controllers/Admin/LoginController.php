@@ -4,49 +4,46 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 
 class LoginController extends Controller
 {
-    public function index(Request $request)
+    //Manda al formulario de login
+    public function index()
     {
-        if (Auth::check()) {
-            return redirect()->intended(route('panel'));
-        }
-
         return view('admin.auth.login');
     }
 
+    //Valida las credenciales y autentica al usuario
     public function login(LoginRequest $request)
     {
-        // Validar credenciales
-        if (!Auth::validate($request->only('email', 'password'))) {
-            return redirect()->route('login')->withErrors('Credenciales incorrectas');
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
+            return back()
+                ->withErrors([
+                    'email' => 'Credenciales incorrectas.'
+                ])
+                ->withInput($request->only('email'));
         }
 
-        // Crear una sesion
-        $user = Auth::getProvider()->retrieveByCredentials($request->only('email', 'password'));
-        Auth::login($user);
+        $user = Auth::user();
 
-        
+        if ($user->estado !== 'activo') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        // Para otros usuarios, redirigir al panel normal
-        return redirect()->route('panel')->with('success', 'Bienvenido ' . $user->name);
-    }
+            return back()
+                ->withErrors([
+                    'email' => 'Tu usuario está inactivo.'
+                ])
+                ->withInput($request->only('email'));
+        }
 
-    // Método adicional para logout (si es necesario)
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->session()->regenerate();
 
-        return redirect()->route('login')
-            ->with('status', 'Sesión cerrada correctamente');
+        return redirect()->route('panel')
+            ->with('success', 'Bienvenido ' . $user->name);
     }
 }
-
-
-

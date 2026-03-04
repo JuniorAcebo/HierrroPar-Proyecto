@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
             'password' => 'nullable|min:8|confirmed',
             'password_confirmation' => 'required_with:password',
             'role' => 'required|exists:roles,name',
-            'almacen_id' => 'nullable|exists:almacenes,id',
+            'almacen_id' => 'required_if:role,GERENTE,VENDEDOR|nullable|exists:almacenes,id',
         ];
     }
 
@@ -39,8 +39,10 @@ class UpdateUserRequest extends FormRequest
             'email.required' => 'El email es requerido',
             'email.unique' => 'El email ya está registrado',
             'password.confirmed' => 'Las contraseñas no coinciden',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password_confirmation.required_with' => 'La confirmación de contraseña es requerida',
             'role.required' => 'El rol es requerido',
+            'almacen_id.required_if' => 'El almacén es obligatorio para Gerentes y Vendedores',
             'almacen_id.exists' => 'El almacén seleccionado no existe',
         ];
     }

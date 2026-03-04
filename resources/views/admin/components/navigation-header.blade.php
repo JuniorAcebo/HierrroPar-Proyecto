@@ -1,19 +1,7 @@
 ﻿<nav class="sb-topnav navbar navbar-expand navbar-dark bg-black border-bottom border-secondary shadow-sm">
     <!-- Navbar Brand -->
     @auth
-        @php
-            $user = auth()->user();
-            if ($user->can('ver-panel')) {
-                $route = route('panel');
-            } elseif ($user->can('ver-producto')) {
-                $route = route('productos.index');
-            } else {
-                $route = route('profile.index');
-            }
-        @endphp
-        <a class="navbar-brand ps-3 fw-semibold text-light" href="{{ $route }}">MARA-DOORS</a>
-    @else
-        <a class="navbar-brand ps-3 fw-semibold text-light" href="{{ route('welcome') }}">MARA-DOORS</a>
+        <a class="navbar-brand ps-3 fw-semibold text-light" href="{{ route('panel') }}">HIERRO-PAR</a>
     @endauth
 
     <!-- Sidebar Toggle -->
@@ -33,12 +21,8 @@
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ route('profile.index') }}">Configuraciones</a></li>
-                <li><a class="dropdown-item" href="#!">Registro de actividad</a></li>
-                <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="{{ route('logout') }}">Cerrar sesión</a></li>
             </ul>
         </li>
     </ul>
 </nav>
-

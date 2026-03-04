@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class InventarioAlmacen extends Model
 {
     use HasFactory;
-
     protected $table = 'inventario_almacenes';
-    protected $fillable = ['producto_id', 'almacen_id', 'stock'];
+	
+	public $incrementing = false;
+    public $timestamps = true;
+
+
+    protected $fillable = ['producto_id','almacen_id','stock'];
 
     public function producto()
     {

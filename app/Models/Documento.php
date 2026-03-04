@@ -9,9 +9,9 @@ class Documento extends Model
 {
     use HasFactory;
     protected $table = 'documentos';
+    public $timestamps = false;
 
     protected $fillable = ['tipo_documento'];
-    public $timestamps = false; 
 
     public function personas()
     {

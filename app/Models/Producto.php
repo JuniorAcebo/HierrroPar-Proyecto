@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class Producto extends Model
 {
     use HasFactory;
+
     protected $table = 'productos';
 
     protected $fillable = [
@@ -17,10 +18,12 @@ class Producto extends Model
         'descripcion',
         'precio_compra',
         'precio_venta',
+        'stock_minimo',
+        'stock_maximo',
         'estado',
         'marca_id',
         'categoria_id',
-        'tipounidad_id'
+        'tipo_unidad_id'
     ];
 
     public function marca()
@@ -33,25 +36,9 @@ class Producto extends Model
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
-    public function tipounidad()
+    public function tipoUnidad()
     {
-        return $this->belongsTo(TipoUnidad::class, 'tipounidad_id');
-    }
-
-    public function inventarios()
-    {
-        return $this->hasMany(InventarioAlmacen::class, 'producto_id');
-    }
-
-    public function compras()
-    {
-        return $this->belongsToMany(Compra::class, 'detalle_compras')
-                    ->withPivot('cantidad', 'precio_compra', 'precio_venta');
-    }
-
-    public function detalleCompras()
-    {
-        return $this->hasMany(DetalleCompra::class, 'producto_id');
+        return $this->belongsTo(TipoUnidad::class, 'tipo_unidad_id');
     }
 
     public function detalleVentas()
@@ -64,16 +51,18 @@ class Producto extends Model
         return $this->hasMany(DetalleTraslado::class, 'producto_id');
     }
 
-    public function almacenes()
+    public function detalleCompras()
     {
-        return $this->belongsToMany(Almacen::class, 'inventario_almacenes')
-                    ->withPivot('stock')
-                    ->withTimestamps();
+        return $this->hasMany(DetalleCompra::class, 'producto_id');
     }
-    
-    // Helper para obtener stock total
-    public function getStockTotalAttribute()
+
+    public function inventarioAlmacenes()
     {
-        return $this->inventarios()->sum('stock');
+        return $this->hasMany(InventarioAlmacen::class, 'producto_id');
+    }
+
+    public function ajustesStock()
+    {
+        return $this->hasMany(AjusteStock::class, 'producto_id');
     }
 }

@@ -17,36 +17,38 @@ class UpdateProductoRequest extends FormRequest
         $producto = $this->route('producto');
 
         return [
-            // ❌ NO validar código porque no se edita
-            // 'codigo' => ...
-
             'nombre' => [
                 'required',
                 'max:80',
                 Rule::unique('productos', 'nombre')->ignore($producto->id),
             ],
 
-            'descripcion'   => 'nullable|string|max:255',
+            'descripcion' => 'nullable|string|max:255',
 
             'precio_compra' => 'required|numeric|min:0',
-            'precio_venta'  => 'required|numeric|min:0',
+            'precio_venta'  => 'required|numeric|min:0|gte:precio_compra',
 
-            'marca_id'      => 'required|exists:marcas,id',
-            'tipounidad_id' => 'required|exists:tipo_unidades,id',
-            'categoria_id'  => 'required|exists:categorias,id',
+            'stock_minimo' => 'nullable|integer|min:0',
+            'stock_maximo' => 'nullable|integer|min:0|gte:stock_minimo',
+
+            'marca_id'       => 'required|integer|exists:marcas,id',
+            'tipo_unidad_id' => 'required|integer|exists:tipo_unidades,id',
+            'categoria_id'   => 'required|integer|exists:categorias,id',
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'nombre'         => 'nombre del producto',
-            'descripcion'    => 'descripción',
-            'precio_compra'  => 'precio de compra',
-            'precio_venta'   => 'precio de venta',
-            'marca_id'       => 'marca',
-            'tipounidad_id'  => 'tipo de unidad',
-            'categoria_id'   => 'categoría',
+            'nombre'          => 'nombre del producto',
+            'descripcion'     => 'descripción',
+            'precio_compra'   => 'precio de compra',
+            'precio_venta'    => 'precio de venta',
+            'stock_minimo'    => 'stock mínimo',
+            'stock_maximo'    => 'stock máximo',
+            'marca_id'        => 'marca',
+            'tipo_unidad_id'  => 'tipo de unidad',
+            'categoria_id'    => 'categoría',
         ];
     }
 
@@ -61,17 +63,21 @@ class UpdateProductoRequest extends FormRequest
 
             'precio_venta.required'  => 'El precio de venta es obligatorio.',
             'precio_venta.min'       => 'El precio de venta no puede ser negativo.',
+            'precio_venta.gte'       => 'El precio de venta debe ser mayor o igual al precio de compra.',
 
-            'marca_id.required'      => 'Debe seleccionar una marca.',
-            'tipounidad_id.required' => 'Debe seleccionar un tipo de unidad.',
-            'categoria_id.required'  => 'Debe seleccionar una categoría.',
+            'stock_minimo.min' => 'El stock mínimo no puede ser negativo.',
+            'stock_maximo.min' => 'El stock máximo no puede ser negativo.',
+            'stock_maximo.gte' => 'El stock máximo debe ser mayor o igual al stock mínimo.',
+
+            'marca_id.required'       => 'Debe seleccionar una marca.',
+            'tipo_unidad_id.required' => 'Debe seleccionar un tipo de unidad.',
+            'categoria_id.required'   => 'Debe seleccionar una categoría.',
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-
             if (
                 $this->precio_compra !== null &&
                 $this->precio_venta !== null &&

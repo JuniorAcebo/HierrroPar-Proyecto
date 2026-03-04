@@ -7,18 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-
     use HasFactory;
     protected $table = 'clientes';
 
-    protected $fillable = ['persona_id', 'grupo_cliente_id'];
+    protected $fillable = ['persona_id','grupo_cliente_id','estado'];
 
     public function persona()
     {
         return $this->belongsTo(Persona::class, 'persona_id');
     }
 
-    public function grupo()
+    public function grupoCliente()
     {
         return $this->belongsTo(GrupoCliente::class, 'grupo_cliente_id');
     }

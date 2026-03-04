@@ -15,6 +15,7 @@ class AjusteStock extends Model
         'producto_id',
         'almacen_id',
         'user_id',
+        'fecha_hora',
         'cantidad_anterior',
         'cantidad_nueva',
         'motivo'
@@ -22,16 +23,16 @@ class AjusteStock extends Model
 
     public function producto()
     {
-        return $this->belongsTo(Producto::class);
+        return $this->belongsTo(Producto::class, 'producto_id');
     }
 
     public function almacen()
     {
-        return $this->belongsTo(Almacen::class);
+        return $this->belongsTo(Almacen::class, 'almacen_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

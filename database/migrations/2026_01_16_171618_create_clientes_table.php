@@ -6,22 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('persona_id')->constrained('personas')->onDelete('cascade');
-            $table->foreignId('grupo_cliente_id')->constrained('grupos_clientes')->onDelete('cascade');
+
+            // 1 a 1 con personas
+            $table->foreignId('persona_id')
+                  ->unique()
+                  ->constrained('personas')
+                  ->restrictOnDelete();
+
+            // Muchos clientes pertenecen a un grupo
+            $table->foreignId('grupo_cliente_id')
+                  ->constrained('grupos_clientes')
+                  ->restrictOnDelete();
+
+            // TINYINT 01 ACTIVO INACTIVO
+            $table->tinyInteger('estado')->default(1);
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('clientes');

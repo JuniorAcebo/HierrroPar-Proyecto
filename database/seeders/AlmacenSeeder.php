@@ -7,7 +7,6 @@ use Illuminate\Database\Seeder;
 
 class AlmacenSeeder extends Seeder
 {
-    
     public function run(): void
     {
         Almacen::create([
@@ -15,7 +14,7 @@ class AlmacenSeeder extends Seeder
             'nombre' => 'Almacén Central',
             'descripcion' => 'Almacén central principal',
             'direccion' => 'Dirección Central',
-            'estado' => true
+            'estado' => 1
         ]);
     }
 }

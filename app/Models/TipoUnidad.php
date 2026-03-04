@@ -10,10 +10,10 @@ class TipoUnidad extends Model
     use HasFactory;
     protected $table = 'tipo_unidades';
 
-    protected $fillable = ['nombre', 'descripcion', 'maneja_stock'];
+    protected $fillable = ['nombre','descripcion'];
 
     public function productos()
     {
-        return $this->hasMany(Producto::class, 'tipounidad_id');
+        return $this->hasMany(Producto::class, 'tipo_unidad_id');
     }
 }

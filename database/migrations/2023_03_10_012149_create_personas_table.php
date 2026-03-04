@@ -6,23 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
-    public function up()
+    public function up(): void
     {
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
-            $table->string('razon_social', 80);
-            $table->string('direccion', 80);
-            $table->string('telefono', 20)->nullable();
-            $table->string('tipo_persona', 20);
-            $table->tinyInteger('estado')->default(1);
-            $table->foreignId('documento_id')->constrained('documentos')->onDelete('restrict');
-            $table->string('numero_documento', 20);
+            $table->string('nombre_completo');
+            $table->string('direccion');
+            $table->string('telefono')->nullable();
+
+            // Tipo de persona (natural o juridica)
+            $table->enum('tipo_persona', ['natural', 'juridica']);
+
+            $table->string('numero_documento');
+
+            // Relación muchos a uno con documentos (catálogo)
+            $table->foreignId('documento_id')
+                  ->constrained('documentos')
+                  ->restrictOnDelete();
+
             $table->timestamps();
+
+            // Evita duplicar mismo número para mismo tipo
+            $table->unique(['numero_documento', 'documento_id']);
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('personas');
     }

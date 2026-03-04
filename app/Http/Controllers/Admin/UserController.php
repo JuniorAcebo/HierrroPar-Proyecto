@@ -7,89 +7,74 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\Almacen;
+use App\Models\Rol;
 use Exception;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:ver-user|crear-user|editar-user|eliminar-user', ['only' => ['index']]);
+        $this->middleware('permission:ver-user', ['only' => ['index']]);
         $this->middleware('permission:crear-user', ['only' => ['create', 'store']]);
         $this->middleware('permission:editar-user', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:eliminar-user', ['only' => ['destroy']]);
+        $this->middleware('permission:update-estado-user', ['only' => ['updateEstado']]);
     }
-    /**
-     * Display a listing of the resource.
-     */
+  
     public function index()
     {
         $users = User::all();
         return view('admin.user.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $roles = Role::all();
+        $roles = Rol::all();
         $almacenes = Almacen::where('estado', true)->get();
         return view('admin.user.create', compact('roles', 'almacenes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
     {
         try {
             DB::beginTransaction();
 
-            //Preparar datos del usuario
             $userData = $request->validated();
             $userData['password'] = Hash::make($userData['password']);
-            
-            //Crear usuario
-            $user = User::create($userData);
 
-            //Asignar su rol (obtenido directamente del request)
-            $user->assignRole($request->input('role'));
+            // Resolver role_id y manejar almacen_id para ADMINISTRADOR
+            $rol = Rol::where('name', $request->role)->first();
+            $userData['role_id'] = $rol->id;
+
+            if ($request->role === 'ADMINISTRADOR') {
+                $userData['almacen_id'] = null;
+            }
+
+            User::create($userData);
 
             DB::commit();
-            return redirect()->route('users.index')->with('success', 'Usuario registrado correctamente');
+            return redirect()->route('users.index')
+                ->with('success', 'Usuario registrado correctamente');
+
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error al crear usuario: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Error al registrar usuario: ' . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->with('error', 'Error al registrar usuario');
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(User $user)
     {
-        $roles = Role::all();
+        $roles = Rol::all();
         $almacenes = Almacen::where('estado', true)->get();
         return view('admin.user.edit', compact('user', 'roles', 'almacenes'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, User $user)
     {
         try {
@@ -104,10 +89,20 @@ class UserController extends Controller
                 unset($userData['password']);
             }
 
+            // Resolver role_id y manejar almacen_id para ADMINISTRADOR
+            $rol = Rol::where('name', $request->role)->first();
+            $userData['role_id'] = $rol->id;
+
+            if ($request->role === 'ADMINISTRADOR') {
+                $userData['almacen_id'] = null;
+            }
+
             $user->update($userData);
 
-            //Actualizar rol (obtenido directamente del request)
-            $user->syncRoles([$request->input('role')]);
+            // Si usas Spatie Roles, esto sincroniza los roles por nombre
+            if (method_exists($user, 'syncRoles')) {
+                $user->syncRoles([$request->role]);
+            }
 
             DB::commit();
             return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente');
@@ -118,20 +113,11 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function updateEstado(User $user)
     {
-        $user = User::find($id);
+        $user->estado = $user->estado === 'activo' ? 'inactivo' : 'activo';
+        $user->save();
 
-        //Eliminar rol
-        $rolUser = $user->getRoleNames()->first();
-        $user->removeRole($rolUser);
-
-        //Eliminar usuario
-        $user->delete();
-
-        return redirect()->route('users.index')->with('success','Usuario eliminado');
+        return redirect()->back()->with('success', 'Estado del usuario actualizado correctamente');
     }
 }

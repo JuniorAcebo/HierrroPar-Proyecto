@@ -5,23 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Venta extends Model
 {
     use HasFactory;
+
     protected $table = 'ventas';
 
     protected $fillable = [
-        'fecha_hora', 
-        'numero_comprobante', 
-        'total', 
-        'estado_pago', 
-        'estado_entrega', 
-        'estado', 
-        'cliente_id', 
-        'grupo_cliente_id', 
-        'almacen_id', 
-        'user_id', 
-        'comprobante_id',
+        'fecha_hora',
+        'numero_comprobante',
+        'total',
+        'estado_comprobante',
+        'estado',
+        'cliente_id',
+        'user_id',
         'nota_personal',
         'nota_cliente'
     ];
@@ -36,15 +34,8 @@ class Venta extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function comprobante()
-    {
-        return $this->belongsTo(Comprobante::class, 'comprobante_id');
-    }
-
-    public function almacen()
-    {
-        return $this->belongsTo(Almacen::class, 'almacen_id');
-    }
+    //$venta = Venta::find($id);
+    //$almacen = $venta->user->almacen; // aquí obtienes el almacén
 
     public function detalles()
     {

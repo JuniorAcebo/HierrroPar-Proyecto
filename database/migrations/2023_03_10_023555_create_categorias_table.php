@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     
-    public function up()
+    public function up(): void
     {
         Schema::create('categorias', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 80);
-            $table->string('descripcion', 255)->nullable();
+            $table->string('nombre');
+            $table->string('descripcion')->nullable();
             $table->timestamps();
         });
     }

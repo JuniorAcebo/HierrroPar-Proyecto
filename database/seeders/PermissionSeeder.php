@@ -3,106 +3,39 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permiso;
 
 class PermissionSeeder extends Seeder
 {
-
     public function run(): void
     {
         $permisos = [
+            'ver-tipounidad','crear-tipounidad','editar-tipounidad',
+            'ver-categoria','crear-categoria','editar-categoria',
+            'ver-marca','crear-marca','editar-marca',
 
-            //Tipo de Unidad
-            'ver-tipounidad',
-            'crear-tipounidad',
-            'editar-tipounidad',
+            'ver-almacen','crear-almacen','editar-almacen','update-estado-almacen',
+            'ver-traslado','crear-traslado','editar-traslado','update-estado-traslado',
 
-            //Categorías
-            'ver-categoria',
-            'crear-categoria',
-            'editar-categoria',
+            'ver-cliente','crear-cliente','editar-cliente','update-estado-cliente',
+            'ver-proveedor','crear-proveedor','editar-proveedor','update-estado-proveedor',
 
-            //Almacen
-            'ver-almacen',
-            'crear-almacen',
-            'editar-almacen',
-            'dar-de-baja-almacen',
+            'ver-compra','crear-compra','editar-compra','update-estado-compra',
+            'ver-venta','crear-venta','editar-venta','update-estado-venta',
 
-            //Marca
-            'ver-marca',
-            'crear-marca',
-            'editar-marca',
-
-            //Roles
-            'ver-role',
-            'crear-role',
-            'editar-role',
-            'eliminar-role',
-
-            //Traslado
-            'ver-traslado',
-            'crear-traslado',
-            'editar-traslado',
-            'eliminar-traslado',
-            'update-estadoTraslado',
-
-            //Cliente
-            'ver-cliente',
-            'crear-cliente',
-            'editar-cliente',
-            'eliminar-cliente',
-
-            //Proveedor
-            'ver-proveedor',
-            'crear-proveedor',
-            'editar-proveedor',
-            'dar-de-baja-proveedor',
+            'ver-producto','crear-producto','editar-producto','update-estado-producto','exportar-productos',
+            'ajustar-stock','ver-historial-stock',
             
-            //Compra
-            'ver-compra',
-            'crear-compra',
-            'editar-compra',
-            'mostrar-compra',
-            'eliminar-compra',
-           
-            //Producto
-            'ver-producto',
-            'crear-producto',
-            'editar-producto',
-            'update-estado-producto',
-            'ajustar-stock',
-            'eliminar-producto',
-            'ver-historial-stock',
+            'ver-grupocliente','crear-grupocliente','editar-grupocliente','update-estado-grupocliente',
 
-            //Venta
-            'ver-venta',
-            'crear-venta',
-            'editar-venta',
-            'mostrar-venta',
-            'eliminar-venta',
-
-            //Ver GrupoCliente
-            'ver-grupocliente',
-            'crear-grupocliente',
-            'editar-grupocliente',
-            'eliminar-grupocliente',
-
-            //User
-            'ver-user',
-            'crear-user',
-            'editar-user',
-            'eliminar-user',
-
-            //Perfil
-            'ver-perfil',
-            'editar-perfil',
-            // Panel
-            'ver-panel',
-
+            'ver-user','crear-user','editar-user','update-estado-user',
+            
+            'ver-perfil','editar-perfil',
+            'ver-panel'
         ];
 
         foreach ($permisos as $permiso) {
-            Permission::create(['name' => $permiso]);
+            Permiso::firstOrCreate(['name' => $permiso]);
         }
     }
 }

@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class DetalleTraslado extends Model
 {
     use HasFactory;
-
     protected $table = 'detalle_traslados';
-    public $incrementing = false; // PK compuesta
+    public $incrementing = false;
     public $timestamps = true;
 
-    protected $fillable = ['producto_id', 'traslado_id', 'cantidad'];
+    protected $fillable = ['producto_id','traslado_id','cantidad'];
 
     public function traslado()
     {

@@ -6,17 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('detalle_traslados', function (Blueprint $table) {
 
-            $table->foreignId('producto_id')->constrained('productos')->cascadeOnDelete();
-            $table->foreignId('traslado_id')->constrained('traslados')->cascadeOnDelete();
+            $table->foreignId('producto_id')
+                  ->constrained('productos')
+                  ->restrictOnDelete();
 
-            $table->decimal('cantidad', 10, 4);
+            $table->foreignId('traslado_id')
+                  ->constrained('traslados')
+                  ->cascadeOnDelete();
+
+            $table->decimal('cantidad', 10, 2);
 
             $table->primary(['producto_id', 'traslado_id']);
 
@@ -24,9 +26,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('detalle_traslados');
