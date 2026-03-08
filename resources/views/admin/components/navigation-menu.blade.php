@@ -49,7 +49,7 @@
                                         <i class="fas fa-list me-1" style="font-size: 0.8rem;"></i>Lista
                                     </a>
                                 @endcan
-                                @can('ajustar-stock')
+                                @can('ajustar-stock-producto')
                                     <a class="nav-link" href="{{ route('productos.createAjuste') }}"
                                         style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">
                                         <i class="fas fa-plus me-1" style="font-size: 0.8rem;"></i>Añadir Ajuste
@@ -61,7 +61,7 @@
                                 @endcan
                             </nav>
                         </div>
-                    @endcan    
+                    @endcan
 
                     <!-- VENTAS -->
                     @can('ver-venta')
@@ -117,16 +117,30 @@
                     @endcan
 
 
-                @if(auth()->user()->role && auth()->user()->role->name === 'ADMINISTRADOR')
+                @if(auth()->user()->role && auth()->user()->role->name === 'Administrador')
                     <div class="sb-sidenav-menu-heading">Administración</div>
                 @endif
 
                 @can('ver-user')
-                    <a class="nav-link" href="{{ route('users.index') }}">
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUser" aria-expanded="false">
                         <div class="sb-nav-link-icon"><i class="fa-solid fa-user-gear"></i></div>
                         Usuarios
-                    </a>
-                @endcan
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-chevron-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseUser" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                @can('ver-user')
+                                    <a class="nav-link" href="{{ route('users.index') }}"><i class="fa-solid fa-list-ul me-1"></i>Lista</a>
+                                @endcan
+                                @can('ver-role')
+                                    <a class="nav-link" href="{{ route('roles.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                                        Roles
+                                    </a>
+                                @endcan
+                            </nav>
+                        </div>
+                    @endcan
                 
             </div>
         </div>

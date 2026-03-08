@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Rol::all();
+        $roles = Rol::where('estado', true)->get();
         $almacenes = Almacen::where('estado', true)->get();
         return view('admin.user.create', compact('roles', 'almacenes'));
     }
@@ -47,10 +47,6 @@ class UserController extends Controller
             // Resolver role_id y manejar almacen_id para ADMINISTRADOR
             $rol = Rol::where('name', $request->role)->first();
             $userData['role_id'] = $rol->id;
-
-            if ($request->role === 'ADMINISTRADOR') {
-                $userData['almacen_id'] = null;
-            }
 
             User::create($userData);
 

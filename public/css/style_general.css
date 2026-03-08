@@ -469,3 +469,38 @@
         justify-content: flex-start;
     }
 }
+.role-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 10px;
+    border-radius:8px;
+    background:#f5f7fa;
+    border:1px solid #e4e7ec;
+    font-weight:600;
+    font-size:12px;   /* aquí controlas el tamaño */
+    color:#344054;
+}
+
+/* cantidad permisos */
+.permiso-count{
+    padding:4px 10px;
+    border-radius:8px;
+    background:#eef2f6;
+    color:#475467;
+    font-weight:500;
+    font-size:12px;
+}
+
+/* permisos del modal */
+.permiso-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:6px;
+    background:#f8fafc;
+    border:1px solid #e4e7ec;
+    font-size:13px;
+    color:#344054;
+}

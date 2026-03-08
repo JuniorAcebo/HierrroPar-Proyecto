@@ -195,7 +195,7 @@
                                     </a>
                                     @endcan
 
-                                    @can('ajustar-stock')
+                                    @can('ajustar-stock-producto')
                                     @if($item->estado == 1)
                                     <a href="{{ route('productos.createAjuste', ['producto_id' => $item->id]) }}" class="btn-icon-soft adjust" title="Ajustar Stock">
                                         <i class="fas fa-boxes"></i>

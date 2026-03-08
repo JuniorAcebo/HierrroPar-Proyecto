@@ -137,8 +137,17 @@
                     </div>
 
                 </div>
-                <div class="card-footer-clean p-4 text-center">
-                    <button type="submit" class="btn btn-primary px-5">Guardar</button>
+                {{-- Botones --}}
+                <div class="card-footer-clean p-4 text-center" >
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Rol
+                    </button>
+
+                    <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
                 </div>
             </form>
         </div>

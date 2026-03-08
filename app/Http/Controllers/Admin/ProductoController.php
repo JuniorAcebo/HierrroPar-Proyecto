@@ -32,8 +32,8 @@ class ProductoController extends Controller
         $this->middleware('permission:crear-producto', ['only' => ['create', 'store']]);
         $this->middleware('permission:editar-producto', ['only' => ['edit', 'update']]);
         $this->middleware('permission:update-estado-producto', ['only' => ['updateEstado']]);
-        $this->middleware('permission:ajustar-stock', ['only' => ['createAjuste', 'storeAjuste','checkStock']]);
-        $this->middleware('permission:ver-historial-stock', ['only' => ['historialAjustes']]);
+        $this->middleware('permission:ajustar-stock-producto', ['only' => ['createAjuste', 'storeAjuste','checkStock']]);
+        $this->middleware('permission:ver-historial-stock-producto', ['only' => ['historialAjustes']]);
         $this->middleware('permission:exportar-productos', ['only' => ['exportExcel', 'exportPdf']]);
     }
     
@@ -60,7 +60,10 @@ class ProductoController extends Controller
             $query->where(function ($q) use ($busqueda) {
                 $q->where('codigo', 'like', "%{$busqueda}%")
                     ->orWhere('nombre', 'like', "%{$busqueda}%")
-                    ->orWhere('descripcion', 'like', "%{$busqueda}%");
+                    ->orWhere('descripcion', 'like', "%{$busqueda}%")
+                    ->orWhereHas('categoria', function ($sub) use ($busqueda) {
+                        $sub->where('nombre', 'like', "%{$busqueda}%");
+                    });
             });
         }
 

@@ -65,7 +65,7 @@
                                 @if($item->almacen)
                                     <span class="badge bg-light text-dark border">{{ $item->almacen->nombre }}</span>
                                 @else
-                                    <span class="text-muted small">--</span>
+                                    <span class="text-muted small">TODOS</span>
                                 @endif
                             </td>
                             <td>

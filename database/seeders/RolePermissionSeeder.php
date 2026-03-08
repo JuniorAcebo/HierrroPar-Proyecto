@@ -11,12 +11,12 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         // ADMINISTRADOR
-        $admin = Rol::where('name', 'ADMINISTRADOR')->first();
+        $admin = Rol::where('name', 'Administrador')->first();
         $allPermIds = Permiso::pluck('id');
         $admin->permisos()->sync($allPermIds);
 
         // GERENTE
-        $gerente = Rol::where('name', 'GERENTE')->first();
+        $gerente = Rol::where('name', 'Gerente')->first();
         $gerenteNames = [
             'ver-tipounidad','crear-tipounidad','editar-tipounidad',
             'ver-categoria','crear-categoria','editar-categoria',
@@ -41,7 +41,7 @@ class RolePermissionSeeder extends Seeder
         $gerente->permisos()->sync($gerentePermIds);
 
         // VENDEDOR
-        $vendedor = Rol::where('name', 'VENDEDOR')->first();
+        $vendedor = Rol::where('name', 'Vendedor')->first();
         $vendedorNames = [
             'ver-venta','crear-venta','ver-producto','ver-cliente','ver-perfil'
         ];

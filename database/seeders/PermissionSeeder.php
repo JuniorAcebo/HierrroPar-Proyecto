@@ -10,32 +10,53 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permisos = [
-            'ver-tipounidad','crear-tipounidad','editar-tipounidad',
-            'ver-categoria','crear-categoria','editar-categoria',
-            'ver-marca','crear-marca','editar-marca',
 
-            'ver-almacen','crear-almacen','editar-almacen','update-estado-almacen',
-            'ver-traslado','crear-traslado','editar-traslado','update-estado-traslado',
+            'Panel' => ['ver-panel'],
 
-            'ver-cliente','crear-cliente','editar-cliente','update-estado-cliente',
-            'ver-proveedor','crear-proveedor','editar-proveedor','update-estado-proveedor',
+            'Usuario' => ['ver-user','crear-user','editar-user','update-estado-user',],
+            'Rol' => ['ver-role','crear-role','editar-role','update-estado-role','ver-permisos-role',],
 
-            'ver-compra','crear-compra','editar-compra','update-estado-compra',
-            'ver-venta','crear-venta','editar-venta','update-estado-venta',
+            'Perfil' => ['ver-perfil','editar-perfil',],
 
-            'ver-producto','crear-producto','editar-producto','update-estado-producto','exportar-productos',
-            'ajustar-stock','ver-historial-stock',
+            'Inventario - Reportes' => ['ver-mov-inventario','exportar-mov-inventario','ver-reporte-ventas','ver-reporte-compras',
+                        'ver-reporte-traslados'],
+
+            'Producto' => ['ver-producto','crear-producto','editar-producto','update-estado-producto',
+                        'exportar-productos','ajustar-stock-producto','ver-historial-stock-producto',],
+
+            'Venta' => ['ver-venta','crear-venta','editar-venta','update-estado-venta',],
+
+            'Compra' => ['ver-compra','crear-compra','editar-compra','update-estado-compra',],
+
+            'Almacen' => [ 'ver-almacen','crear-almacen','editar-almacen','update-estado-almacen',],
+
+            'Traslado' => ['ver-traslado', 'crear-traslado','editar-traslado','update-estado-traslado',],
+
+            'Cliente' => ['ver-cliente','crear-cliente','editar-cliente','update-estado-cliente',],
+
+            'Proveedor' => ['ver-proveedor','crear-proveedor','editar-proveedor','update-estado-proveedor',],
+
+            'Grupo Cliente' => ['ver-grupocliente','crear-grupocliente','editar-grupocliente','update-estado-grupocliente',],
+
+            'Categoria' => ['ver-categoria','crear-categoria','editar-categoria','update-estado-categoria',],
+
+            'Tipo Unidad' => ['ver-tipounidad','crear-tipounidad','editar-tipounidad','update-estado-tipounidad'],
             
-            'ver-grupocliente','crear-grupocliente','editar-grupocliente','update-estado-grupocliente',
-
-            'ver-user','crear-user','editar-user','update-estado-user',
-            
-            'ver-perfil','editar-perfil',
-            'ver-panel'
+            'Marca' => ['ver-marca','crear-marca','editar-marca','update-estado-marca',],
         ];
 
-        foreach ($permisos as $permiso) {
-            Permiso::firstOrCreate(['name' => $permiso]);
+        foreach ($permisos as $modulo => $listaPermisos) {
+
+            foreach ($listaPermisos as $permiso) {
+
+                Permiso::firstOrCreate([
+                    'name' => $permiso
+                ], [
+                    'modulo' => $modulo
+                ]);
+
+            }
+
         }
     }
 }

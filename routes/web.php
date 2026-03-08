@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\LogoutController;
 use App\Http\Controllers\Admin\ProductoController;
+use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,21 +35,24 @@ Route::prefix('admin')->group(function () {
 
             // Utilidades
             Route::get('/check-stock', [ProductoController::class, 'checkStock'])->name('checkStock');
-            Route::patch('/{producto}/estado', [ProductoController::class, 'updateEstado'])->name('updateEstado');
+            
 
             // reportes wip
             Route::post('/export-excel', [ProductoController::class, 'exportExcel'])->name('export.excel');
             Route::post('/export-pdf', [ProductoController::class, 'exportPdf'])->name('export.pdf');
         });
 
-        // --- usuarios---
+        // --- Recursos---
         Route::resources([
             'productos'     => ProductoController::class,
-            'users'         => UserController::class
+            'users'         => UserController::class,
+            'roles'         => RolController::class
         ]);
 
-        // --- Estado de usuario (activar/desactivar) ---
+        // --- (activar/desactivar) ---
         Route::patch('users/{user}/estado', [UserController::class, 'updateEstado'])->name('users.updateEstado');
+        Route::patch('roles/{role}/estado', [RolController::class, 'updateEstado'])->name('roles.updateEstado');
+        Route::patch('productos/{producto}/estado', [ProductoController::class, 'updateEstado'])->name('updateEstado');
 
 
         // --- Logout ---

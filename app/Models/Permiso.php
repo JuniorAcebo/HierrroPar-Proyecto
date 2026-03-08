@@ -10,7 +10,7 @@ class Permiso extends Model
     use HasFactory;
 
     protected $table = 'permisos';
-    protected $fillable = ['name'];
+    protected $fillable = ['name','modulo'];
 
     public function roles()
     {
