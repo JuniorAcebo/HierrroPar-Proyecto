@@ -15,13 +15,12 @@ class ClienteSeeder extends Seeder
             'documento_id'     => 1,
             'nombre_completo'  => 'Cliente General',
             'direccion'        => 'Sin dirección',
-            'telefono'         => '00000000',
             'tipo_persona'     => 'natural',
         ]);
 
         Cliente::create([
             'persona_id' => $persona->id,
-            'grupo_cliente_id' => 3,
+            'grupo_cliente_id' => 1,
             'estado' => 1
         ]);
     }

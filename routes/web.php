@@ -1,11 +1,13 @@
 ﻿<?php
 
+use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\LogoutController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Admin\UserController;
+use App\Models\Cliente;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin/login');
@@ -46,16 +48,18 @@ Route::prefix('admin')->group(function () {
         Route::resources([
             'productos'     => ProductoController::class,
             'users'         => UserController::class,
-            'roles'         => RolController::class
+            'roles'         => RolController::class,
+            'clientes'      => ClienteController::class,
         ]);
 
         // --- (activar/desactivar) ---
         Route::patch('users/{user}/estado', [UserController::class, 'updateEstado'])->name('users.updateEstado');
         Route::patch('roles/{role}/estado', [RolController::class, 'updateEstado'])->name('roles.updateEstado');
-        Route::patch('productos/{producto}/estado', [ProductoController::class, 'updateEstado'])->name('updateEstado');
+        Route::patch('productos/{producto}/estado', [ProductoController::class, 'updateEstado'])->name('productos.updateEstado');
+        Route::patch('clientes/{cliente}/estado', [ClienteController::class, 'updateEstado'])->name('clientes.updateEstado');
 
 
-        // --- Logout ---
+        // --- Logout ---   
         Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
     });
 

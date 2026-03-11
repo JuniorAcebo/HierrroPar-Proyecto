@@ -69,9 +69,10 @@ class ProductoController extends Controller
 
         switch ($sort) {
             case 'categoria':
-                $query->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
-                    ->select('productos.*')
-                    ->orderBy('categorias.nombre', $direction);
+                $query->orderBy(
+                        Categoria::select('nombre')
+                            ->whereColumn('categorias.id', 'productos.categoria_id'),
+                        $direction);
                 break;
             case 'stock_total':
                 $query->orderBy('stock_total', $direction);

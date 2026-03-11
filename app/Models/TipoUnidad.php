@@ -10,7 +10,7 @@ class TipoUnidad extends Model
     use HasFactory;
     protected $table = 'tipo_unidades';
 
-    protected $fillable = ['nombre','descripcion','estado'];
+    protected $fillable = ['nombre','descripcion'];
 
     public function productos()
     {

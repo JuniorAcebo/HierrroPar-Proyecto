@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreProductoRequest extends FormRequest
 {
@@ -30,7 +31,18 @@ class StoreProductoRequest extends FormRequest
                 'unique:productos,codigo'
             ],
 
-            'nombre' => 'required|string|max:80',
+            'nombre' => [
+                'required',
+                'string',
+                'max:80',
+                Rule::unique('productos')
+                    ->where(fn ($query) => $query
+                        ->where('marca_id', $this->marca_id)
+                        ->where('categoria_id', $this->categoria_id)
+                        ->where('tipo_unidad_id', $this->tipo_unidad_id)
+                    )
+            ],
+            
             'descripcion' => 'nullable|string|max:255',
 
             'precio_compra' => 'required|numeric|min:0',

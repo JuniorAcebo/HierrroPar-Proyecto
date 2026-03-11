@@ -18,15 +18,15 @@ class GrupoClienteSeeder extends Seeder
                 'estado' => 1
             ],
             [
-                'nombre' => 'Facturadores',
-                'descripcion' => 'Clientes frecuentes que realizan compras al por mayor y requieren facturación continua. Acceden a un descuento preferencial.',
-                'descuento_global' => 10.00,
-                'estado' => 1
-            ],
-            [
                 'nombre' => 'Ferreterias',
                 'descripcion' => 'Ferreterías asociadas que compran productos para reventa. Reciben un descuento especial por volumen.',
                 'descuento_global' => 5.00,
+                'estado' => 1
+            ],
+            [
+                'nombre' => 'Facturadores',
+                'descripcion' => 'Clientes frecuentes que realizan compras al por mayor y requieren facturación continua. Acceden a un descuento preferencial.',
+                'descuento_global' => 10.00,
                 'estado' => 1
             ]
         ];

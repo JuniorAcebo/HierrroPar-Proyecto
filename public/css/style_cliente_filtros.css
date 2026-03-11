@@ -1,0 +1,125 @@
+/* ── Filter Bar ─────────────────────────────────── */
+.filter-bar {
+    background: #f8f9fc;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem 1.5rem;
+}
+
+.filter-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    transition: all 0.2s;
+}
+
+.filter-group.active .filter-select {
+    border-color: #4c6ef5;
+    background-color: #eef2ff;
+    color: #4c6ef5;
+    font-weight: 600;
+}
+
+.filter-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #868e96;
+    margin: 0;
+    padding-left: 2px;
+}
+
+.filter-label i {
+    margin-right: 3px;
+    opacity: 0.7;
+}
+
+.filter-select {
+    border: 1.5px solid #dee2e6;
+    border-radius: 7px;
+    padding: 0.4rem 2rem 0.4rem 0.7rem;
+    font-size: 0.85rem;
+    color: #495057;
+    background-color: #fff;
+    cursor: pointer;
+    min-width: 160px;
+    appearance: auto;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #4c6ef5;
+    box-shadow: 0 0 0 2px rgba(76, 110, 245, 0.15);
+}
+
+.filter-divider {
+    width: 1px;
+    height: 36px;
+    background: #dee2e6;
+    margin: 0 0.25rem;
+    align-self: flex-end;
+    margin-bottom: 2px;
+}
+
+.filter-clear-btn {
+    margin-left: auto;
+    align-self: flex-end;
+    background: transparent;
+    border: 1.5px solid #dee2e6;
+    border-radius: 7px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.82rem;
+    color: #868e96;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+}
+
+.filter-clear-btn:hover {
+    border-color: #e03131;
+    color: #e03131;
+    background: #fff5f5;
+}
+
+/* ── Datatable ──────────────────────────────────── */
+.datatable-top {
+    padding: 1rem 1.5rem !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+}
+
+.datatable-search {
+    float: none !important;
+    margin-right: auto !important;
+    margin-left: 0 !important;
+}
+
+.datatable-selector {
+    padding: 0.5rem 1.75rem 0.5rem 0.75rem !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    margin-right: 8px !important;
+    cursor: pointer;
+}
+
+.datatable-input {
+    min-width: 250px;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    padding: 0.5rem 0.75rem !important;
+}
+
+.datatable-input:focus {
+    border-color: #4fc1ff !important;
+    box-shadow: 0 0 0 0.2rem rgba(79, 193, 255, 0.25) !important;
+    outline: none !important;
+}

@@ -8,7 +8,7 @@
 
 @push('css')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="{{ asset('css/style_General.css') }}">
+<link rel="stylesheet" href="{{ asset('css/style_general.css') }}">
 @endpush
 
 @section('content')
@@ -36,7 +36,7 @@
     <div class="card-clean">
         <div class="card-header-clean">
             <div class="card-header-title">
-                <i class="fas fa-list"></i> Lista de Productos
+                <i class="fas fa-box-open"></i> Lista de Productos
             </div>
         </div>
 
@@ -157,19 +157,13 @@
                             </td>
                             <td class="text-center">
                                 @php
-                                $totalStock = $item->inventarioAlmacenes->sum('stock');
-                                $badge = 'badge-success';
+                                $totalStock = $item->stock_total ?? 0;
+                                @endphp
 
-                                if ($totalStock < $item->stock_minimo) {
-                                    $badge = 'badge-danger';
-                                    } elseif ($item->stock_maximo > 0 && $totalStock > $item->stock_maximo) {
-                                    $badge = 'badge-warning';
-                                    }
-                                    @endphp
-
-                                    <span class="badge-pill {{ $badge }}">
-                                        {{ $totalStock }}
-                                    </span>
+                                <span class="badge-pill {{ $totalStock < $item->stock_minimo ? 'badge-danger' : 
+                                                    ($item->stock_maximo > 0 && $totalStock > $item->stock_maximo ? 'badge-warning' : 'badge-success') }}">
+                                    {{ $totalStock }}
+                                </span>
                             </td>
                             <td>
                                 <span class="badge bg-light text-dark border">{{ $item->categoria->nombre }}</span>
@@ -204,9 +198,17 @@
                                     @endcan
 
                                     @can('update-estado-producto')
-                                    <button type="button" class="btn-icon-soft delete" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ $item->id }}" title="Cambiar Estado">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                            @if ($item->estado == 1)
+                                                <button class="btn-icon-soft delete" data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal-{{ $item->id }}" title="Desactivar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn-icon-soft" data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal-{{ $item->id }}" title="Restaurar">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            @endif
                                     @endcan
                                 </div>
                             </td>

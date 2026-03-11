@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre_completo');
-            $table->string('direccion');
+            $table->string('direccion')->nullable();
             $table->string('telefono')->nullable();
 
             // Tipo de persona (natural o juridica)
