@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('tipo_unidades', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
-            $table->string('descripcion')->nullable();
+            $table->string('nombre',30)->unique();
+            $table->string('descripcion',255)->nullable();
             $table->timestamps();
         });
     }

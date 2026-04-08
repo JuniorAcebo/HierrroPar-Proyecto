@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('documentos', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo_documento');
+            $table->string('tipo_documento',30);
 
         });
     }

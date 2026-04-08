@@ -23,15 +23,15 @@ return new class extends Migration
                   ->constrained('almacenes')
                   ->restrictOnDelete();
 
-            $table->decimal('costo_envio', 10, 2)->default(0);
+            $table->decimal('costo_envio', 5, 2)->default(0);
 
             // Usuario que realiza el traslado
             $table->foreignId('user_id')
                   ->constrained('users')
                   ->restrictOnDelete();
 
-            // Estado del traslado: PENDIENTE, CANCELADO, COMPLETADO
-            $table->enum('estado', ['pendiente', 'cancelado', 'completado'])
+            // Estado del traslado: PENDIENTE, EN_CURSO, CANCELADO, COMPLETADO
+            $table->enum('estado', ['pendiente','en_curso', 'cancelado', 'completado'])
                   ->default('pendiente');
 
             $table->timestamps();

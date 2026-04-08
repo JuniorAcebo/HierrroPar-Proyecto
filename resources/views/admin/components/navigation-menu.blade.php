@@ -16,16 +16,14 @@
                 </div>
 
                     @can('ver-panel')
-
                         <div class="sb-sidenav-menu-heading">Inicio</div>
 
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('panel') }}">
                             <div class="sb-nav-link-icon">
                                 <i class="fa-solid fa-gauge-high"></i>
                             </div>
-                            PanelHome
+                            Panel de Control
                         </a>
-                        
                     @endcan
 
                 <div class="sb-sidenav-menu-heading">Módulos</div>
@@ -59,6 +57,24 @@
                                         <i class="fas fa-history me-1" style="font-size: 0.8rem;"></i>Lista de Ajustes
                                     </a>
                                 @endcan
+
+                                @can('ver-categoria')
+                                <a class="nav-link" href="{{ route('productos.indexCategorias') }}" style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">
+                                    <i class="fas fa-tags me-1" style="font-size: 0.8rem;"></i>Categorías
+                                </a>
+                                @endcan
+
+                                @can('ver-marca')
+                                <a class="nav-link" href="{{ route('productos.indexMarcas') }}" style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">
+                                    <i class="fas fa-copyright me-1" style="font-size: 0.8rem;"></i>Marcas
+                                </a>
+                                @endcan
+
+                                @can('ver-tipounidad')
+                                <a class="nav-link" href="{{ route('productos.indexTipoUnidades') }}" style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">
+                                    <i class="fas fa-ruler me-1" style="font-size: 0.8rem;"></i>Tipos de Unidad
+                                </a>
+                                @endcan
                             </nav>
                         </div>
                     @endcan
@@ -73,10 +89,10 @@
                         <div class="collapse" id="collapseVentas" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 @can('ver-venta')
-                                    <a class="nav-link" href="#"><i class="fa-solid fa-list-ul me-1"></i>Lista</a>
+                                    <a class="nav-link" href="{{ route('ventas.index') }}"><i class="fa-solid fa-list-ul me-1"></i>Lista</a>
                                 @endcan
                                 @can('crear-venta')
-                                    <a class="nav-link" href="#"><i class="fa-solid fa-plus me-1"></i>Crear</a>
+                                    <a class="nav-link" href="{{ route('ventas.create') }}"><i class="fa-solid fa-plus me-1"></i>Crear</a>
                                 @endcan
                             </nav>
                         </div>
@@ -91,15 +107,24 @@
                         <div class="collapse" id="collapseTraslados" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 @can('ver-traslado')
-                                    <a class="nav-link" href="#"><i class="fa-solid fa-list-ul me-1"></i>Lista</a>
+                                    <a class="nav-link" href="{{ route('traslados.index') }}"><i class="fa-solid fa-list-ul me-1"></i>Lista</a>
                                 @endcan
                                 @can('crear-traslado')
-                                    <a class="nav-link" href="#"><i class="fa-solid fa-plus me-1"></i>Crear</a>
+                                    <a class="nav-link" href="{{ route('traslados.create') }}"><i class="fa-solid fa-plus me-1"></i>Crear</a>
                                 @endcan
                             </nav>
                         </div>
                     @endcan
                     
+                    @can('ver-movimiento')
+                        <a class="nav-link" href="{{ route('movimientos.index') }}"
+                        style="padding: 0.6rem 0.8rem; margin: 0.1rem 0.3rem;">
+                            <div class="sb-nav-link-icon" style="font-size: 0.9rem;">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </div>
+                            Movimientos
+                        </a>
+                    @endcan
 
                     @can('ver-cliente')
                         <a class="nav-link" href={{ route('clientes.index') }}>
@@ -110,7 +135,7 @@
                     
 
                     @can('ver-almacen')
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('almacenes.index') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-warehouse"></i></div>
                             Almacenes
                         </a>

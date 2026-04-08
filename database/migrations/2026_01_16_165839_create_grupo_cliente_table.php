@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('grupos_clientes', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('descripcion')->nullable();
+            $table->string('nombre',30);
+            $table->string('descripcion',255)->nullable();
             $table->decimal('descuento_global', 5, 2)->default(0.00);
 
             // Estado lógico TINY INT (activo/inactivo)

@@ -24,7 +24,7 @@ class StoreClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre_completo'  => ['required', 'string', 'max:255'],
+            'nombre_completo'  => ['required', 'string', 'max:50'],
             'tipo_persona'     => ['required', 'in:natural,juridica'],
             'telefono'         => ['nullable', 'string', 'max:20'],
             'direccion'        => ['nullable', 'string', 'max:255'],
@@ -32,7 +32,7 @@ class StoreClienteRequest extends FormRequest
             'numero_documento' => [
                 'required',
                 'string',
-                'max:50',
+                'max:20',
                 Rule::unique('personas', 'numero_documento')
                     ->where(fn ($query) => $query->where('documento_id', $this->documento_id))
             ],
@@ -57,7 +57,7 @@ class StoreClienteRequest extends FormRequest
     {
         return [
             'nombre_completo.required'  => 'El nombre completo es obligatorio.',
-            'nombre_completo.max'       => 'El nombre no puede superar los 255 caracteres.',
+            'nombre_completo.max'       => 'El nombre no puede superar los 50 caracteres.',
 
             'tipo_persona.required'     => 'El tipo de persona es obligatorio.',
             'tipo_persona.in'           => 'El tipo de persona debe ser Natural o Jurídica.',
@@ -67,10 +67,13 @@ class StoreClienteRequest extends FormRequest
 
             'numero_documento.required' => 'El número de documento es obligatorio.',
             'numero_documento.unique'   => 'Este número de documento ya está registrado para ese tipo de documento.',
-            'numero_documento.max'      => 'El número de documento no puede superar los 50 caracteres.',
+            'numero_documento.max'      => 'El número de documento no puede superar los 20 caracteres.',
 
             'grupo_cliente_id.required' => 'Debe seleccionar un grupo de cliente.',
             'grupo_cliente_id.exists'   => 'El grupo seleccionado no es válido.',
+
+            'telefono.max'              => 'El teléfono no puede superar los 20 caracteres.',
+            'direccion.max'             => 'La dirección no puede superar los 255 caracteres.',
         ];
     }
 }

@@ -194,7 +194,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body p-4 text-center">
-                                            <h6 class="mb-3">{{ $item->estado == 1 ? '¿Desactivar cliente?' : '¿Activar cliente?' }}</h6>
+                                            <h6 class="mb-3">{{ $item->estado == 1 ? '¿Desactivar cliente: ' . $item->persona->nombre_completo . '?' : '¿Activar cliente: ' . $item->persona->nombre_completo . '?' }}</h6>
                                             <p class="text-muted small mb-4">
                                                 {{ $item->estado == 1
                                                     ? 'El cliente pasará a estado inactivo (no se eliminará).'

@@ -22,7 +22,7 @@ class StoreRolRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:30|unique:roles,name',
+            'name' => 'required|string|max:25|unique:roles,name',
             'permisos' => 'required|array|min:1',
             'permisos.*' => 'exists:permisos,id'
         ];
@@ -33,7 +33,7 @@ class StoreRolRequest extends FormRequest
         return [
             'name.required' => 'El nombre del rol es obligatorio.',
             'name.unique' => 'Este rol ya existe.',
-            'name.max' => 'El nombre del rol no debe superar los 30 caracteres.',
+            'name.max' => 'El nombre del rol no debe superar los 25 caracteres.',
 
             'permisos.required' => 'Debe seleccionar al menos un permiso.',
             'permisos.array' => 'Los permisos deben enviarse como lista.',

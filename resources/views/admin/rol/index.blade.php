@@ -73,7 +73,7 @@
 
                                             @can('ver-permisos-role')
                                                 <button class="btn-icon-soft" data-bs-toggle="modal"
-                                                    data-bs-target="#verModal-{{ $item->id }}" title="Ver Detalles">
+                                                    data-bs-target="#verModal-{{ $item->id }}" title="Ver Permisos">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                             @endcan
@@ -174,12 +174,11 @@
                                             </div>
                                             <div class="modal-body p-4 text-center">
                                                 <h6 class="mb-3">
-                                                    ¿{{ $item->estado == 1 ? 'Desactivar' : 'Activar' }} Rol?
+                                                    ¿{{ $item->estado == 1 ? 'Desactivar al rol: ' . $item->name : 'Activar al Rol: ' . $item->name }}?
                                                 </h6>
                                                 <p class="text-muted small mb-4">
                                                     ¿Seguro que quieres
-                                                    {{ $item->estado == 1 ? 'desactivar' : 'activar' }} este rol
-                                                    del sistema?
+                                                    {{ $item->estado == 1 ? 'desactivar' : 'activar' }} este rol?
                                                 </p>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <button type="button" class="btn btn-outline-secondary btn-sm"

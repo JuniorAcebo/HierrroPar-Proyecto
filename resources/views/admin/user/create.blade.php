@@ -164,7 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateAlmacenField() {
         const selectedText = roleSelect.options[roleSelect.selectedIndex].text.trim().toUpperCase();
-        const firstOption = almacenSelect.options[0];
+
+        if (selectedText === '' || selectedText === 'SELECCIONE:') {
+            almacenRow.style.display = 'none';
+            return;
+        }
 
         if (selectedText === 'ADMINISTRADOR') {
             almacenRow.style.display = 'none';
@@ -172,14 +176,8 @@ document.addEventListener('DOMContentLoaded', function () {
             almacenSelect.required = false;
         } else {
             almacenRow.style.display = 'flex';
-            
-            if (selectedText === 'GERENTE' || selectedText === 'VENDEDOR') {
-                firstOption.text = '-- Seleccione un Almacen --';
-                almacenSelect.required = true;
-            } else {
-                firstOption.text = 'Sin Almacen asignado';
-                almacenSelect.required = false;
-            }
+            almacenSelect.options[0].text = '-- Seleccione un Almacén --';
+            almacenSelect.required = true;
         }
     }
 

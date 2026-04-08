@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('compras', function (Blueprint $table) {
             $table->id();
             $table->dateTime('fecha_hora');
-            $table->string('numero_comprobante');
+            $table->string('numero_comprobante',50);
             $table->decimal('total', 10, 2)->unsigned();
             $table->text('nota_personal')->nullable();
             

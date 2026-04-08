@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
             $table->dateTime('fecha_hora');
-            $table->string('numero_comprobante')->unique();
+            $table->string('numero_comprobante',50)->unique();
             $table->decimal('total', 10, 2)->unsigned();
             
             $table->text('nota_personal')->nullable();
@@ -25,6 +25,10 @@ return new class extends Migration
                   ->default('pendiente');
 
             // Relaciones (cardinalidades)
+            $table->foreignId('almacen_id')
+                  ->constrained('almacenes')
+                  ->restrictOnDelete();
+
             $table->foreignId('cliente_id')
                   ->constrained('clientes')
                   ->restrictOnDelete();

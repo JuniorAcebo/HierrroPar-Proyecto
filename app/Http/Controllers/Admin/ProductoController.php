@@ -21,20 +21,48 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductosExport;
+use App\Http\Requests\StoreCategoriaRequest;
+use App\Http\Requests\StoreMarcaRequest;
+use App\Http\Requests\StoreTipoUnidadRequest;
+use App\Http\Requests\UpdateCategoriaRequest;
+use App\Http\Requests\UpdateMarcaRequest;
+use App\Http\Requests\UpdateTipoUnidadRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Movimiento;
 
 class ProductoController extends Controller
 {
 
     function __construct()
     {
+        //------------------Producto--------------------//
         $this->middleware('permission:ver-producto', ['only' => ['index']]);
         $this->middleware('permission:crear-producto', ['only' => ['create', 'store']]);
         $this->middleware('permission:editar-producto', ['only' => ['edit', 'update']]);
         $this->middleware('permission:update-estado-producto', ['only' => ['updateEstado']]);
+        $this->middleware('permission:exportar-productos', ['only' => ['exportExcel', 'exportPdf']]);
+
+        // permisos relacionados a ajustes de stock e historial
         $this->middleware('permission:ajustar-stock-producto', ['only' => ['createAjuste', 'storeAjuste','checkStock']]);
         $this->middleware('permission:ver-historial-stock-producto', ['only' => ['historialAjustes']]);
-        $this->middleware('permission:exportar-productos', ['only' => ['exportExcel', 'exportPdf']]);
+
+        //------------------Categoria--------------------//
+        $this->middleware('permission:ver-categoria', ['only' => ['indexCategorias']]);
+        $this->middleware('permission:crear-categoria', ['only' => ['storeCategoria']]);
+        $this->middleware('permission:editar-categoria', ['only' => ['updateCategoria']]);
+        $this->middleware('permission:eliminar-categoria', ['only' => ['destroyCategoria']]);
+
+        //------------------Tipo Unidad--------------------//
+        $this->middleware('permission:ver-tipounidad', ['only' => ['indexTipoUnidades']]);
+        $this->middleware('permission:crear-tipounidad', ['only' => ['storeTipoUnidad']]);
+        $this->middleware('permission:editar-tipounidad', ['only' => ['updateTipoUnidad']]);
+        $this->middleware('permission:eliminar-tipounidad', ['only' => ['destroyTipoUnidad']]);
+
+        //------------------Marca--------------------//
+        $this->middleware('permission:ver-marca', ['only' => ['indexMarcas']]);
+        $this->middleware('permission:crear-marca', ['only' => ['storeMarca']]);
+        $this->middleware('permission:editar-marca', ['only' => ['updateMarca']]);
+        $this->middleware('permission:eliminar-marca', ['only' => ['destroyMarca']]);
     }
     
     // muestra el listado de productos con filtros, ordenamiento y resumen de stock
@@ -231,96 +259,113 @@ class ProductoController extends Controller
     }
 
     // procesa y registra un ajuste manual de stock
-    public function storeAjuste(StoreAjusteStockRequest $request)
-    {
-        try {
-            DB::transaction(function () use ($request) {
+public function storeAjuste(StoreAjusteStockRequest $request)
+{
+    try {
+        DB::transaction(function () use ($request) {
 
-                // validar cantidad mínima según tipo de ajuste
-                if (in_array($request->tipo_ajuste, ['sumar', 'restar']) && $request->cantidad <= 0) {
-                    throw ValidationException::withMessages([
-                        'cantidad' => "La cantidad debe ser mayor que 0 para esta operación."
-                    ]);
-                }
-
-                if (intval($request->cantidad) != $request->cantidad) {
-                    throw ValidationException::withMessages([
-                        'cantidad' => "La cantidad debe ser un número entero."
-                    ]);
-                }
-
-                if ($request->tipo_ajuste === 'fijar' && $request->cantidad < 0) {
-                    throw ValidationException::withMessages([
-                        'cantidad' => "El stock a fijar no puede ser negativo."
-                    ]);
-                }
-
-                // Obtener inventario bloqueando la fila
-                $inventario = InventarioAlmacen::where('producto_id', $request->producto_id)
-                    ->where('almacen_id', $request->almacen_id)
-                    ->lockForUpdate()
-                    ->first();
-
-                $cantidadAnterior = $inventario ? $inventario->stock : 0;
-                $nuevaCantidad = $cantidadAnterior;
-
-                switch ($request->tipo_ajuste) {
-                    case 'sumar':
-                        $nuevaCantidad += $request->cantidad;
-                        break;
-
-                    case 'restar':
-                        if ($request->cantidad > $cantidadAnterior) {
-                            throw ValidationException::withMessages([
-                                'cantidad' => "No se puede restar {$request->cantidad}. Stock disponible: {$cantidadAnterior}."
-                            ]);
-                        }
-                        $nuevaCantidad -= $request->cantidad;
-                        break;
-
-                    case 'fijar':
-                        $nuevaCantidad = $request->cantidad;
-                        break;
-                }
-
-                if ($nuevaCantidad < 0) {
-                    throw ValidationException::withMessages([
-                        'cantidad' => "El stock resultante no puede ser negativo."
-                    ]);
-                }
-
-                if ($inventario) {
-                    InventarioAlmacen::where('producto_id', $request->producto_id)
-                        ->where('almacen_id', $request->almacen_id)
-                        ->update(['stock' => $nuevaCantidad, 'updated_at' => now()]);
-                } else {
-                    InventarioAlmacen::create([
-                        'producto_id' => $request->producto_id,
-                        'almacen_id'  => $request->almacen_id,
-                        'stock'       => $nuevaCantidad
-                    ]);
-                }
-
-                // Guardar ajuste histórico
-                AjusteStock::create([
-                    'producto_id'       => $request->producto_id,
-                    'almacen_id'        => $request->almacen_id,
-                    'user_id'           => auth()->id(),
-                    'cantidad_anterior' => $cantidadAnterior,
-                    'cantidad_nueva'    => $nuevaCantidad,
-                    'motivo'            => $request->motivo ?? 'Ajuste manual desde menú'
+            if (in_array($request->tipo_ajuste, ['sumar', 'restar']) && $request->cantidad <= 0) {
+                throw ValidationException::withMessages([
+                    'cantidad' => 'La cantidad debe ser mayor que 0 para esta operación.'
                 ]);
-            });
+            }
 
-            return redirect()->route('productos.historialAjustes')
-                ->with('success', 'Stock ajustado correctamente.');
-        } catch (ValidationException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error al ajustar stock: ' . $e->getMessage());
-        }
+            if (intval($request->cantidad) != $request->cantidad) {
+                throw ValidationException::withMessages([
+                    'cantidad' => 'La cantidad debe ser un número entero.'
+                ]);
+            }
+
+            if ($request->tipo_ajuste === 'fijar' && $request->cantidad < 0) {
+                throw ValidationException::withMessages([
+                    'cantidad' => 'El stock a fijar no puede ser negativo.'
+                ]);
+            }
+
+            $inventario = InventarioAlmacen::where('producto_id', $request->producto_id)
+                ->where('almacen_id', $request->almacen_id)
+                ->lockForUpdate()
+                ->first();
+
+            $cantidadAnterior = $inventario ? $inventario->stock : 0;
+            $nuevaCantidad    = $cantidadAnterior;
+
+            switch ($request->tipo_ajuste) {
+                case 'sumar':
+                    $nuevaCantidad += $request->cantidad;
+                    break;
+                case 'restar':
+                    if ($request->cantidad > $cantidadAnterior) {
+                        throw ValidationException::withMessages([
+                            'cantidad' => "No se puede restar {$request->cantidad}. Stock disponible: {$cantidadAnterior}."
+                        ]);
+                    }
+                    $nuevaCantidad -= $request->cantidad;
+                    break;
+                case 'fijar':
+                    $nuevaCantidad = $request->cantidad;
+                    break;
+            }
+
+            if ($nuevaCantidad < 0) {
+                throw ValidationException::withMessages([
+                    'cantidad' => 'El stock resultante no puede ser negativo.'
+                ]);
+            }
+
+            if ($inventario) {
+                InventarioAlmacen::where('producto_id', $request->producto_id)
+                    ->where('almacen_id', $request->almacen_id)
+                    ->update(['stock' => $nuevaCantidad, 'updated_at' => now()]);
+            } else {
+                InventarioAlmacen::create([
+                    'producto_id' => $request->producto_id,
+                    'almacen_id'  => $request->almacen_id,
+                    'stock'       => $nuevaCantidad,
+                ]);
+            }
+
+            $ajuste = AjusteStock::create([
+                'producto_id'       => $request->producto_id,
+                'almacen_id'        => $request->almacen_id,
+                'user_id'           => auth()->id(),
+                'cantidad_anterior' => $cantidadAnterior,
+                'cantidad_nueva'    => $nuevaCantidad,
+                'motivo'            => $request->motivo ?? 'Ajuste manual desde menú',
+            ]);
+
+            $productoNombre = Producto::where('id', $request->producto_id)->value('nombre') ?? '—';
+            $almacenNombre  = Almacen::where('id', $request->almacen_id)->value('nombre')   ?? '—';
+
+            Movimiento::create([
+                'tipo'                  => 'ajuste_stock',
+                'referencia_id'         => $ajuste->id,
+                'referencia_texto'      => 'AJ-' . $ajuste->id,
+                'producto_nombre'       => $productoNombre,
+                'almacen_origen'        => $almacenNombre,
+                'almacen_destino'       => null,
+                'cantidad'              => abs($nuevaCantidad - $cantidadAnterior),
+                'cantidad_anterior'     => $cantidadAnterior,
+                'cantidad_nueva'        => $nuevaCantidad,
+                'stock_inicial_origen'  => $cantidadAnterior,
+                'stock_final_origen'    => $nuevaCantidad,
+                'stock_inicial_destino' => null,
+                'stock_final_destino'   => null,
+                'usuario'               => auth()->user()->name ?? '—',
+                'motivo'                => $request->motivo ?? 'Ajuste manual desde menú',
+                'fecha_hora'            => now(),
+            ]);
+        });
+
+        return redirect()->route('productos.historialAjustes')
+            ->with('success', 'Stock ajustado correctamente.');
+
+    } catch (ValidationException $e) {
+        throw $e;
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error al ajustar stock: ' . $e->getMessage());
     }
-
+}
     // devuelve el stock actual de un producto en un almacén específico
     public function checkStock(Request $request)
     {
@@ -578,6 +623,247 @@ class ProductoController extends Controller
             return $pdf->download('historial-productos_' . now()->format('Y-m-d_H-i-s') . '.pdf');
         } catch (\Exception $e) {
             return back()->with('error', 'Error al exportar historial PDF: ' . $e->getMessage());
+        }
+    }
+
+    public function indexCategorias(Request $request)
+    {
+        $busqueda  = $request->get('busqueda');
+        $perPage   = $request->get('per_page', 10);
+        $sort      = $request->get('sort', 'nombre');
+        $direction = $request->get('direction', 'asc');
+
+        if (!in_array($perPage,   [5, 10, 15, 20, 25])) $perPage   = 10;
+        if (!in_array($direction, ['asc', 'desc']))       $direction = 'asc';
+
+        $query = Categoria::withCount('productos');
+
+        if ($busqueda) {
+            $query->where(function ($q) use ($busqueda) {
+                $q->where('nombre',        'like', "%{$busqueda}%")
+                  ->orWhere('descripcion', 'like', "%{$busqueda}%");
+            });
+        }
+
+        $allowedSorts = ['nombre', 'descripcion', 'productos_count'];
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->latest();
+        }
+
+        $categorias      = $query->paginate($perPage);
+        $totalCategorias = Categoria::count();
+        $totalProductos  = Categoria::withCount('productos')->get()->sum('productos_count');
+
+        return view('admin.producto.categoria.lista_categorias', compact(
+            'categorias', 'busqueda', 'perPage', 'sort',
+            'direction', 'totalCategorias', 'totalProductos'
+        ));
+    }
+
+    public function storeCategoria(StoreCategoriaRequest $request)
+    {
+        try {
+            Categoria::create($request->validated());
+
+            return redirect()
+                ->route('productos.indexCategorias')
+                ->with('success', 'Categoría creada correctamente.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Error al crear la categoría: ' . $e->getMessage());
+        }
+    }
+
+    public function updateCategoria(UpdateCategoriaRequest $request, Categoria $categoria)
+    {
+        $categoria->update($request->validated());
+
+        return redirect()
+            ->route('productos.indexCategorias')
+            ->with('success', 'Categoría actualizada correctamente.');
+    }
+
+    public function destroyCategoria(Categoria $categoria)
+    {
+        try {
+            $count = $categoria->productos()->count();
+
+            if ($count > 0) {
+                return back()->with(
+                    'error',
+                    "No se puede eliminar \"{$categoria->nombre}\" porque tiene {$count} producto(s) asociado(s)."
+                );
+            }
+
+            $categoria->delete();
+
+            return redirect()
+                ->route('productos.indexCategorias')
+                ->with('success', "Categoría \"{$categoria->nombre}\" eliminada correctamente.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar: ' . $e->getMessage());
+        }
+    }
+
+    public function indexTipoUnidades(Request $request)
+    {
+        $busqueda  = $request->get('busqueda');
+        $perPage   = $request->get('per_page', 10);
+        $sort      = $request->get('sort', 'nombre');
+        $direction = $request->get('direction', 'asc');
+
+        if (!in_array($perPage,   [5, 10, 15, 20, 25])) $perPage   = 10;
+        if (!in_array($direction, ['asc', 'desc']))       $direction = 'asc';
+
+        $query = TipoUnidad::withCount('productos');
+
+        if ($busqueda) {
+            $query->where(function ($q) use ($busqueda) {
+                $q->where('nombre',        'like', "%{$busqueda}%")
+                  ->orWhere('descripcion', 'like', "%{$busqueda}%");
+            });
+        }
+
+        $allowedSorts = ['nombre', 'descripcion', 'productos_count'];
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->latest();
+        }
+
+        $tipoUnidades      = $query->paginate($perPage);
+        $totalTipoUnidades = TipoUnidad::count();
+
+        return view('admin.producto.tipo_unidad.lista_tipo_unidades', compact(
+            'tipoUnidades', 'busqueda', 'perPage',
+            'sort', 'direction', 'totalTipoUnidades'
+        ));
+    }
+
+    public function storeTipoUnidad(StoreTipoUnidadRequest $request)
+    {
+        try {
+            TipoUnidad::create($request->validated());
+
+            return redirect()
+                ->route('productos.indexTipoUnidades')
+                ->with('success', 'Tipo de unidad creado correctamente.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Error al crear el tipo de unidad: ' . $e->getMessage());
+        }
+    }
+
+    public function updateTipoUnidad(UpdateTipoUnidadRequest $request, TipoUnidad $tipoUnidad)
+    {
+        $tipoUnidad->update($request->validated());
+
+        return redirect()
+            ->route('productos.indexTipoUnidades')
+            ->with('success', 'Tipo de unidad actualizado correctamente.');
+    }
+
+    public function destroyTipoUnidad(TipoUnidad $tipoUnidad)
+    {
+        try {
+            $count = $tipoUnidad->productos()->count();
+
+            if ($count > 0) {
+                return back()->with(
+                    'error',
+                    "No se puede eliminar \"{$tipoUnidad->nombre}\" porque tiene {$count} producto(s) asociado(s)."
+                );
+            }
+
+            $tipoUnidad->delete();
+
+            return redirect()
+                ->route('productos.indexTipoUnidades')
+                ->with('success', "Tipo de unidad \"{$tipoUnidad->nombre}\" eliminado correctamente.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar: ' . $e->getMessage());
+        }
+    }
+
+    public function indexMarcas(Request $request)
+    {
+        $busqueda  = $request->get('busqueda');
+        $perPage   = $request->get('per_page', 10);
+        $sort      = $request->get('sort', 'nombre');
+        $direction = $request->get('direction', 'asc');
+
+        if (!in_array($perPage,   [5, 10, 15, 20, 25])) $perPage   = 10;
+        if (!in_array($direction, ['asc', 'desc']))       $direction = 'asc';
+
+        $query = Marca::withCount('productos');
+
+        if ($busqueda) {
+            $query->where(function ($q) use ($busqueda) {
+                $q->where('nombre',        'like', "%{$busqueda}%")
+                  ->orWhere('descripcion', 'like', "%{$busqueda}%");
+            });
+        }
+
+        $allowedSorts = ['nombre', 'descripcion', 'productos_count'];
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->latest();
+        }
+
+        $marcas      = $query->paginate($perPage);
+        $totalMarcas = Marca::count();
+
+        return view('admin.producto.marca.lista_marcas', compact(
+            'marcas', 'busqueda', 'perPage',
+            'sort', 'direction', 'totalMarcas'
+        ));
+    }
+
+    public function storeMarca(StoreMarcaRequest $request)
+    {
+        try {
+            Marca::create($request->validated());
+
+            return redirect()
+                ->route('productos.indexMarcas')
+                ->with('success', 'Marca creada correctamente.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Error al crear la marca: ' . $e->getMessage());
+        }
+    }
+
+    public function updateMarca(UpdateMarcaRequest $request, Marca $marca)
+    {
+        $marca->update($request->validated());
+
+            return redirect()
+                ->route('productos.indexMarcas')
+                ->with('success', 'Marca actualizada correctamente.');
+    }
+
+    public function destroyMarca(Marca $marca)
+    {
+        try {
+            $count = $marca->productos()->count();
+
+            if ($count > 0) {
+                return back()->with(
+                    'error',
+                    "No se puede eliminar \"{$marca->nombre}\" porque tiene {$count} producto(s) asociado(s)."
+                );
+            }
+
+            $marca->delete();
+
+            return redirect()
+                ->route('productos.indexMarcas')
+                ->with('success', "Marca \"{$marca->nombre}\" eliminada correctamente.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar: ' . $e->getMessage());
         }
     }
 }

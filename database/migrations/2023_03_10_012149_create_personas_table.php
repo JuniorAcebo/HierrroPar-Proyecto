@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_completo');
-            $table->string('direccion')->nullable();
-            $table->string('telefono')->nullable();
+            $table->string('nombre_completo',50);
+            $table->string('direccion',255)->nullable();
+            $table->string('telefono',20)->nullable();
 
             // Tipo de persona (natural o juridica)
             $table->enum('tipo_persona', ['natural', 'juridica']);
 
-            $table->string('numero_documento');
+            $table->string('numero_documento',20);
 
             // Relación muchos a uno con documentos (catálogo)
             $table->foreignId('documento_id')

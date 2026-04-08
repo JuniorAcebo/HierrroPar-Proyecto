@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->string('name',50);
+            $table->string('email',50)->unique();
+            $table->string('password',255);
 
             $table->enum('estado', [
                 'activo',
@@ -32,7 +32,6 @@ return new class extends Migration
                   ->restrictOnDelete();
                   
 
-            $table->rememberToken();
             $table->timestamps();
         });
     }

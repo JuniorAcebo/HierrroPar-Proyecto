@@ -17,6 +17,11 @@ class Almacen extends Model
         return $this->hasMany(User::class, 'almacen_id');
     }
 
+    public function ventas()
+    {
+        return $this->hasMany(Venta::class,'almacen_id');
+    }
+
     public function ajustesStock()
     {
         return $this->hasMany(AjusteStock::class, 'almacen_id');

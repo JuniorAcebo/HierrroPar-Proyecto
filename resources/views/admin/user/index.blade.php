@@ -118,9 +118,9 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body p-4 text-center">
-                                        <h6 class="mb-3">¿{{ $item->estado == 'activo' ? 'Desactivar' : 'Activar' }} Usuario?</h6>
+                                        <h6 class="mb-3">¿{{ $item->estado == 'activo' ? 'Desactivar al usuario: ' . $item->name : 'Activar al usuario: ' . $item->name }}?</h6>
                                         <p class="text-muted small mb-4">
-                                            ¿Seguro que quieres {{ $item->estado == 'activo' ? 'desactivar' : 'activar' }} este usuario del sistema?
+                                            ¿Seguro que quieres {{ $item->estado == 'activo' ? 'desactivar' : 'activar' }} este usuario?
                                         </p>
                                         <div class="d-flex justify-content-center gap-2">
                                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>

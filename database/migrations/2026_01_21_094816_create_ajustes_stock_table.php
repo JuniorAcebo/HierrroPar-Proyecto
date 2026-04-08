@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamp('fecha_hora')->useCurrent();
             $table->decimal('cantidad_anterior', 10, 2);
             $table->decimal('cantidad_nueva', 10, 2);
-            $table->string('motivo')->nullable();
+            $table->string('motivo',100)->nullable();
 
             $table->timestamps();
         });

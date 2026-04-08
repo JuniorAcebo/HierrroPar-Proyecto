@@ -11,11 +11,11 @@ return new class extends Migration
         Schema::create('almacenes', function (Blueprint $table) {
             
             $table->id();
-            $table->string('codigo');
+            $table->string('codigo',50);
 
-            $table->string('nombre');
-            $table->string('descripcion')->nullable();
-            $table->string('direccion')->nullable();
+            $table->string('nombre',30);
+            $table->string('descripcion',255)->nullable();
+            $table->string('direccion',100)->nullable();
 
             //ACTIVO INACTIVO TINYINT 01
             $table->tinyInteger('estado')->default(1);
