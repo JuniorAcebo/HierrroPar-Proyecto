@@ -1,9 +1,10 @@
 ------------
-![Img](https://raw.githubusercontent.com/JuniorAcebo/HierrroPar-Proyecto/master/ApoyoMaterial/Panel.png)
-
 # SISTEMA ERP (Gestión de inventario y venta)
 
-## Para más información ver el documento -> [📄 Ver Informe](https://github.com/JuniorAcebo/HierrroPar-Proyecto/blob/master/ApoyoMaterial/Informe.pdf)
+## Para más información ver el documento -> [📄 Ver Informe](https://drive.google.com/file/d/1wYfZVZbBUn2bGOWyYexD3lwvD3miDIhT/view?usp=sharing)
+
+![Img](https://raw.githubusercontent.com/JuniorAcebo/HierrroPar-Proyecto/master/ApoyoMaterial/Panel.png)
+
 
 ## Dependencias
 - Se debe tener instalado [Laragon](https://laragon.org/download) (versión **PHP** **8.1** o superior)  
