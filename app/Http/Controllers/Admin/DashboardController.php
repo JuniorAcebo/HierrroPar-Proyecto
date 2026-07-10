@@ -374,7 +374,7 @@ class DashboardController extends Controller
             ->join('ventas', 'clientes.id', '=', 'ventas.cliente_id')
             ->join('personas', 'clientes.persona_id', '=', 'personas.id')
             ->join('grupos_clientes', 'clientes.grupo_cliente_id', '=', 'grupos_clientes.id')
-            ->whereNotIn('estado', ['cancelada', 'pendiente'])
+            ->whereNotIn('ventas.estado', ['cancelada', 'pendiente'])
             ->select(
                 'clientes.id',
                 'personas.nombre_completo',
