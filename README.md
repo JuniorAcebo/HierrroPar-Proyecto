@@ -1,10 +1,13 @@
 ------------
-![Img](https://github.com/SakNoelCode/Imagenes_Proyectos/blob/master/sistemaAbarrotePanel.png)
+# SISTEMA ERP (Gestión de inventario y venta)
 
-# Punto de Venta para una tienda
+## Para más información ver el documento -> [📄 Ver Informe](https://drive.google.com/file/d/1wYfZVZbBUn2bGOWyYexD3lwvD3miDIhT/view?usp=sharing)
+
+![Img](https://raw.githubusercontent.com/JuniorAcebo/HierrroPar-Proyecto/master/ApoyoMaterial/Panel.png)
+
 
 ## Dependencias
-- Se debe tener instalado [XAMPP](https://www.apachefriends.org/es/download.html "XAMPP") (versión **PHP** **8.1** o superior)  
+- Se debe tener instalado [Laragon](https://laragon.org/download) (versión **PHP** **8.1** o superior)  
 - Se debe tener instalado [Composer](https://getcomposer.org/download/ "Composer")
 
 ## Como instalar en Local
@@ -12,7 +15,7 @@
 
 1. Abra el repositorio en su editor de código favorito (**Visual Studio Code**)
 
-1. Ejecute la aplicación **XAMPP** e inice los módulos de **Apache** y **MySQL**
+1. Ejecute la aplicación **LARAGON** e inice los módulos de **Apache** y **MySQL**
 
 1. Abra una nueva terminal en su editor 
 
@@ -66,6 +69,3 @@ php artisan serve
 ## Licencia
 - Este proyecto está licenciado bajo la Licencia MIT. Para más información, consulta el archivo [LICENSE](LICENSE).
 - Obtenga más información sobre esta licencia  [MIT license](https://opensource.org/licenses/MIT).
-
-------------
-![Img](https://github.com/SakNoelCode/Imagenes_Proyectos/blob/master/sistemaAbarrotecategory.png)
