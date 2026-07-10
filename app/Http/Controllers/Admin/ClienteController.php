@@ -24,6 +24,7 @@ class ClienteController extends Controller
 
     public function index()
     {
+        $perro = "hola";
         $clientes  = Cliente::with(['persona.documento', 'grupoCliente'])->get();
         $grupos    = GrupoCliente::where('estado', true)->get();
         $documentos = Documento::all();
